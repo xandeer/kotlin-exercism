@@ -14,7 +14,7 @@ object ScrabbleScore {
 
   fun scoreWord(word: String): Int {
     return word.lowercase()
-      .sumBy(::scoreLetter)
+      .sumOf(::scoreLetter)
       // .map(::scoreLetter).sum()
   }
 }
