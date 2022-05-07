@@ -4,16 +4,16 @@ object PigLatin {
     return phrase.split(" ").map(::translateWord).joinToString(" ")
   }
 
-  private val r1 = "([aeiou]|xr|yt)(.+)".toRegex()
-  private val r2 = "([^aeiou]+)(y.+)".toRegex()
-  private val r3 = "(s?qu|[^aeiou]+)(.+)".toRegex()
+  private val rxs = arrayOf(
+    "([aeiou]|xr|yt)(.+)",
+    "([^aeiou]+)(y.+)",
+    "(s?qu|[^aeiou]+)(.+)",
+    ".+")
+    .map(String::toRegex)
+    .zip(arrayOf("$0ay", "$2$1ay", "$2$1ay", "$0"))
 
   private fun translateWord(word: String): String {
-    return when {
-      word.matches(r1) -> word + "ay"
-      word.matches(r2) -> word.replace(r2, "$2$1ay")
-      word.matches(r3) -> word.replace(r3, "$2$1ay")
-      else -> word
-    }
+    return rxs.first { (rx, _) -> word.matches(rx) }
+      .let { (regex, replacement) -> word.replace(regex, replacement) }
   }
 }
