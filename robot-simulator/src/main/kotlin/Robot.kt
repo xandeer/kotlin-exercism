@@ -19,22 +19,21 @@ class Robot(
   }
 
   private fun turnLeft() {
-    orientation = when (orientation) {
-      Orientation.NORTH -> Orientation.WEST
-      Orientation.WEST -> Orientation.SOUTH
-      Orientation.SOUTH -> Orientation.EAST
-      Orientation.EAST -> Orientation.NORTH
-    }
+    orientation = orientation.rotate(false)
   }
 
   private fun turnRight() {
-    orientation = when (orientation) {
-      Orientation.NORTH -> Orientation.EAST
-      Orientation.EAST -> Orientation.SOUTH
-      Orientation.SOUTH -> Orientation.WEST
-      Orientation.WEST -> Orientation.NORTH
-    }
+    orientation = orientation.rotate(true)
   }
+
+  private fun Orientation.rotate(isClockwise: Boolean) =
+      // cycle through the enum values in the appropriate direction
+      generateSequence { Orientation.values().run { if (isClockwise) toList() else reversed() } }
+          .flatten()
+          // drop before current
+          .dropWhile { it != this }
+          // find the next value in the sequence
+          .elementAt(1)
 
   private fun advance() {
     gridPosition =
